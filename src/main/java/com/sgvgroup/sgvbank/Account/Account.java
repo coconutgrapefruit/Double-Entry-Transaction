@@ -1,11 +1,8 @@
 package com.sgvgroup.sgvbank.Account;
 
-import com.sgvgroup.sgvbank.LedgerEntries.LedgerEntry;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -22,15 +19,11 @@ public class Account {
         @Column(nullable = false)
         private BigDecimal balance;
 
-        @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-        private List<LedgerEntry> entries = new ArrayList<>();
-
         public Account() { }
 
         public Account(String accountNumber) {
                 setAccountNumber(accountNumber);
                 this.balance = BigDecimal.valueOf(0.00);
-                this.entries = new ArrayList<>();
         }
 
 
@@ -56,13 +49,5 @@ public class Account {
 
         public void setBalance(BigDecimal balance) {
                 this.balance = balance;
-        }
-
-        public List<LedgerEntry> getEntries() {
-                return entries;
-        }
-
-        public void setEntries(List<LedgerEntry> entries) {
-                this.entries = entries;
         }
 }
