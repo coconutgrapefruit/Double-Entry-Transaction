@@ -1,7 +1,8 @@
 create table if not exists accounts (
     id UUID primary key default gen_random_uuid(),
     account_number varchar(20) not null unique,
-    balance numeric(19,4) not null default 0
+    balance numeric(19,4) not null default 0 check (balance >= 0),
+    version bigint NOT NULL DEFAULT 0
 );
 create table if not exists ledger_entries (
     id UUID primary key default gen_random_uuid(),
