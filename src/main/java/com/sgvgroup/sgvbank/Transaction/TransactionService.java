@@ -13,6 +13,7 @@ import com.sgvgroup.sgvbank.OutboxEvent.PayloadDto;
 import com.sgvgroup.sgvbank.Transaction.dto.TransactionDto;
 import com.sgvgroup.sgvbank.Transaction.dto.TransactionRequestDto;
 import com.sgvgroup.sgvbank.enums.EntryType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,30 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final LedgerEntryRepository ledgerEntryRepository;
     private final OutboxEventRepository outboxEventRepository;
     private final ObjectMapper objectMapper;
-
-    public TransactionService(
-            TransactionRepository transactionRepository,
-            AccountRepository accountRepository,
-            LedgerEntryRepository ledgerEntryRepository,
-            OutboxEventRepository outboxEventRepository,
-            ObjectMapper objectMapper
-    ) {
-        this.transactionRepository = transactionRepository;
-        this.accountRepository = accountRepository;
-        this.ledgerEntryRepository = ledgerEntryRepository;
-        this.outboxEventRepository = outboxEventRepository;
-        this.objectMapper = objectMapper;
-    }
-
-    public String convertPayloadToJson(PayloadDto dto) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(dto);
-    }
 
     @Transactional
     public TransactionDto makeTransaction(TransactionRequestDto request) {
