@@ -1,9 +1,15 @@
 package com.sgvgroup.sgvbank.Transaction;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sgvgroup.sgvbank.Account.Account;
 import com.sgvgroup.sgvbank.Account.AccountRepository;
 import com.sgvgroup.sgvbank.LedgerEntries.LedgerEntry;
+import com.sgvgroup.sgvbank.LedgerEntries.LedgerEntryDto;
 import com.sgvgroup.sgvbank.LedgerEntries.LedgerEntryRepository;
+import com.sgvgroup.sgvbank.OutboxEvent.OutboxEvent;
+import com.sgvgroup.sgvbank.OutboxEvent.OutboxEventRepository;
+import com.sgvgroup.sgvbank.OutboxEvent.PayloadDto;
 import com.sgvgroup.sgvbank.Transaction.dto.TransactionDto;
 import com.sgvgroup.sgvbank.Transaction.dto.TransactionRequestDto;
 import com.sgvgroup.sgvbank.enums.EntryType;
@@ -19,15 +25,25 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final LedgerEntryRepository ledgerEntryRepository;
+    private final OutboxEventRepository outboxEventRepository;
+    private final ObjectMapper objectMapper;
 
     public TransactionService(
             TransactionRepository transactionRepository,
             AccountRepository accountRepository,
-            LedgerEntryRepository ledgerEntryRepository
+            LedgerEntryRepository ledgerEntryRepository,
+            OutboxEventRepository outboxEventRepository,
+            ObjectMapper objectMapper
     ) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
         this.ledgerEntryRepository = ledgerEntryRepository;
+        this.outboxEventRepository = outboxEventRepository;
+        this.objectMapper = objectMapper;
+    }
+
+    public String convertPayloadToJson(PayloadDto dto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(dto);
     }
 
     @Transactional
@@ -53,6 +69,23 @@ public class TransactionService {
                 new LedgerEntry(to, request.amount(), EntryType.CREDIT));
         Transaction transaction = transactionRepository.save(
                 new Transaction(from, to, request.amount()));
+
+        PayloadDto payload = new PayloadDto(
+                TransactionDto.fromEntity(transaction),
+                LedgerEntryDto.fromEntity(debit),
+                LedgerEntryDto.fromEntity(credit)
+                );
+
+        OutboxEvent event = new OutboxEvent();
+        event.setAggregateType("Transaction");
+        event.setAggregateId(transaction.getId());
+        try {
+            String payloadJson = objectMapper.writeValueAsString(payload);
+            event.setPayload(payloadJson);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalStateException("failed to serialize payload", ex);
+        }
+        outboxEventRepository.save(event);
 
         return TransactionDto.fromEntity(transaction);
     }

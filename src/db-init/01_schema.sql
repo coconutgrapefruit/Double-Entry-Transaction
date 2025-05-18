@@ -19,3 +19,11 @@ create table if not exists transactions (
     amount numeric(19,4) not null,
     created_at timestampz not null default now()
 )
+create table if not exists outbox (
+    id bigint primary key auto_increment,
+    aggregate_type varchar(20),
+    aggregate_id UUID not null,
+    payload JSON,
+    created_at timestampz not null default now(),
+    published boolean default false
+    )
