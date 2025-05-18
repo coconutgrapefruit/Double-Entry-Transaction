@@ -41,8 +41,8 @@ public class Controller {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/transactions/{accountId}")
-    public ResponseEntity<Page<TransactionDto>> history(
+    @GetMapping("/transactions/account/{accountId}")
+    public ResponseEntity<Page<TransactionDto>> transactionHistory(
             @PathVariable UUID accountId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
