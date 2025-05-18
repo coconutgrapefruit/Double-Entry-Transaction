@@ -6,7 +6,15 @@ create table if not exists accounts (
 create table if not exists ledger_entries (
     id UUID primary key default gen_random_uuid(),
     account_id UUID not null references accounts(id),
+    transaction_id UUID not null references transactions(id),
     amount numeric(19,4) not null,
     entry_type varchar(6) not null check(entry_type in (DEBIT, CREDIT)),
     created_at timestampz not null default now()
 );
+create table if not exists transactions (
+    id UUID primary key default gen_random_uuid(),
+    from_account_id UUID not null references accounts(id),
+    to_account_id UUID not null references accounts(id),
+    amount numeric(19,4) not null,
+    created_at timestampz not null default now()
+)

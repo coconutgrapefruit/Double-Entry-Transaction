@@ -8,46 +8,46 @@ import java.util.UUID;
 @Entity
 @Table(name = "accounts")
 public class Account {
-        @Id
-        @GeneratedValue(strategy = GenerationType.UUID)
-        @Column(name = "id", updatable = false, nullable = false)
-        private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
-        @Column(name = "account_number", nullable = false, unique = true)
-        private String accountNumber;
+    @Column(name = "account_number", nullable = false, unique = true)
+    private String accountNumber;
 
-        @Column(nullable = false)
-        private BigDecimal balance;
+    @Column(nullable = false)
+    private BigDecimal balance;
 
-        public Account() { }
+    public Account() { }
 
-        public Account(String accountNumber) {
-                setAccountNumber(accountNumber);
-                this.balance = BigDecimal.valueOf(0.00);
-        }
+    public Account(String accountNumber) {
+        setAccountNumber(accountNumber);
+        this.balance = BigDecimal.valueOf(0.00);
+    }
 
 
-        public UUID getId() {
-                return id;
-        }
+    public UUID getId() {
+        return id;
+    }
 
-        public void setId(UUID id) {
-                this.id = id;
-        }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-        public String getAccountNumber() {
-                return accountNumber;
-        }
+    public String getAccountNumber() {
+        return accountNumber;
+    }
 
-        public void setAccountNumber(String accountNumber) {
-                this.accountNumber = accountNumber;
-        }
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
 
-        public BigDecimal getBalance() {
-                return balance;
-        }
+    public BigDecimal getBalance() {
+        return balance;
+    }
 
-        public void setBalance(BigDecimal balance) {
-                this.balance = balance;
-        }
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 }

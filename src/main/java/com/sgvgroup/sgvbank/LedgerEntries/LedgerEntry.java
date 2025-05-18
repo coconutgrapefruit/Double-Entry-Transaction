@@ -1,6 +1,7 @@
 package com.sgvgroup.sgvbank.LedgerEntries;
 
 import com.sgvgroup.sgvbank.Account.Account;
+import com.sgvgroup.sgvbank.Transaction.Transaction;
 import com.sgvgroup.sgvbank.enums.EntryType;
 import jakarta.persistence.*;
 
@@ -20,6 +21,10 @@ public class LedgerEntry {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "transaction_id", nullable = false)
+    private Transaction transaction;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -77,5 +82,13 @@ public class LedgerEntry {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }

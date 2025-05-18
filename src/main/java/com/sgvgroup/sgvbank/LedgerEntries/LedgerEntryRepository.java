@@ -9,5 +9,5 @@ import java.util.UUID;
 @Repository
 public interface LedgerEntryRepository extends JpaRepository<LedgerEntry, UUID> {
     Page<LedgerEntry> findByAccountId(UUID accountId);
-
+    Page<LedgerEntry> findByTransactionId(UUID transactionId);
 }
